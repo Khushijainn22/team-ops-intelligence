@@ -34,6 +34,7 @@ router.get('/', async (req, res) => {
       recentDecisions,
       upcomingDeadlineTasks,
       overdueActionsList,
+      upcomingDeadlineActions,
     ] = await Promise.all([
       Decision.countDocuments(),
       Decision.countDocuments({ outcome: 'pending' }),
@@ -49,7 +50,8 @@ router.get('/', async (req, res) => {
       Meeting.find({ date: { $gte: now } }).sort({ date: 1 }).limit(5),
       Decision.find().sort({ createdAt: -1 }).limit(5),
       Task.find({ dueDate: { $gte: now, $lte: nextWeek }, status: { $ne: 'done' } }).populate('assignee').sort({ dueDate: 1 }).limit(10),
-      Action.find({ status: 'overdue' }).populate('meetingId').limit(10),
+      Action.find({ status: 'overdue' }).populate('meetingId').populate('owner', 'name').limit(10),
+      Action.find({ deadline: { $gte: now, $lte: nextWeek }, status: { $in: ['pending', 'in_progress'] } }).populate('owner', 'name').sort({ deadline: 1 }).limit(10),
     ]);
 
     // Workload overview
@@ -69,6 +71,7 @@ router.get('/', async (req, res) => {
       upcomingMeetings,
       recentDecisions,
       upcomingDeadlineTasks,
+      upcomingDeadlineActions,
       overdueActionsList,
       workloadOverview,
     });

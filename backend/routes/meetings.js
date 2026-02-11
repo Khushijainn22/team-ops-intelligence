@@ -23,7 +23,7 @@ router.get('/:id', async (req, res) => {
   try {
     const meeting = await Meeting.findById(req.params.id).populate('attendees', 'name');
     if (!meeting) return res.status(404).json({ error: 'Not found' });
-    const actions = await Action.find({ meetingId: req.params.id });
+    const actions = await Action.find({ meetingId: req.params.id }).populate('owner', 'name');
     const decisions = await Decision.find({ meetingId: req.params.id }).populate('madeBy', 'name');
     res.json({ ...meeting.toObject(), actions, decisions });
   } catch (err) { res.status(500).json({ error: err.message }); }
