@@ -177,9 +177,9 @@ function Dashboard() {
 
         {/* Upcoming Deadlines (Tasks & Actions) */}
         <div className="full-width">
-          <div className="section-title">
+          <Link className="section-title" style={{ textDecoration: "none" }}>
             <FiClock /> Upcoming Deadlines
-          </div>
+          </Link>
           <div className="grid-2">
             <div className="card">
               <h5 className="mb-16">Tasks</h5>
